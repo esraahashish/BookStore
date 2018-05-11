@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Search"
+        android:id="@+id/search_item"></item>
 
+    <item android:title="Customize"
+        android:id="@+id/customize_item"></item>
+
+    <item android:title="add books"
+        android:id="@+id/add_books"></item>
+
+    <item android:title="edit books"
+        android:id="@+id/edit_books"></item>
+
+    <item android:title="remove books"
+        android:id="@+id/remove_books"></item>
 </menu>

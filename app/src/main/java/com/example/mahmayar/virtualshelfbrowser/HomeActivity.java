@@ -14,19 +14,9 @@ public class HomeActivity  extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
+        setContentView(R.layout.home_page);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
 
         Button addBtn = (Button) findViewById(R.id.admin);
         addBtn.setOnClickListener(new View.OnClickListener() {
@@ -35,12 +25,11 @@ public class HomeActivity  extends AppCompatActivity {
                 Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
-
             }
         });
 
         Button addBtn2 = (Button) findViewById(R.id.user);
-        addBtn.setOnClickListener(new View.OnClickListener() {
+        addBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HomeActivity.this, AdminActivity.class);

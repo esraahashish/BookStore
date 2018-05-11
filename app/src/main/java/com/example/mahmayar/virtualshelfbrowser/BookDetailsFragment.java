@@ -1,12 +1,22 @@
 package com.example.mahmayar.virtualshelfbrowser;
 
-import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 /**
@@ -64,25 +74,71 @@ public class BookDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_book_details, container, false);
+        Intent intent = getActivity().getIntent();
+        if (intent != null && intent.hasExtra("book")) {
+            Bundle data = intent.getExtras();
+            // get the selected book details
+            Book book = data.getParcelable("book");
+            URL url = null;
+            try {
+                url = new URL(book.getImageUrl());
+                Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                ImageView imageView = (ImageView) rootView.findViewById(R.id.book_thumbnail);
+                imageView.setImageBitmap(bmp);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            ((TextView) rootView.findViewById(R.id.book_title)).setText(
+                    mapNullToNA(book.getTitle()));
+
+            ((TextView) rootView.findViewById(R.id.book_price)).setText(
+                    formulatePrice(book.getPrice(), book.getCurrency()));
+
+            ((TextView) rootView.findViewById(R.id.book_isbn)).setText(
+                    mapNullToNA(book.getISBN()));
+
+            ((TextView) rootView.findViewById(R.id.book_release_date)).setText(
+                    mapNullToNA(book.getReleaseDate()));
+
+            ((TextView) rootView.findViewById(R.id.book_category)).setText(
+                    mapNullToNA(book.getCategory()));
+
+            ((TextView) rootView.findViewById(R.id.book_author)).setText(
+                    mapNullToNA(book.getAuthor()));
+
+            ((TextView) rootView.findViewById(R.id.book_reviews)).setText(
+                    Html.fromHtml(
+                            "<a href=\"" + book.getReviewURL() + "\">Book reviews</a> "));
+            ((TextView) rootView.findViewById(R.id.book_reviews)).setMovementMethod(
+                    LinkMovementMethod.getInstance());
+            ((TextView) rootView.findViewById(R.id.book_description)).setText(
+                    mapNullToNA(book.getDescription()));
+
+        }
+        return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+    private String formulatePrice(float price, String currency) {
+        if(price == -1) {
+            return "Not for sale";
         }
+        return String.valueOf(price) + currency;
+    }
+
+    private String mapNullToNA(String string) {
+        if(!string.equals("null"))
+            return string;
+        return "N/A";
     }
 
     @Override
@@ -102,7 +158,6 @@ public class BookDetailsFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }

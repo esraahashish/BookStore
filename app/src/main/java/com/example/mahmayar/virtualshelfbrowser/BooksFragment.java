@@ -1,12 +1,14 @@
 package com.example.mahmayar.virtualshelfbrowser;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 
@@ -24,12 +26,10 @@ public class BooksFragment extends Fragment {
     private GridView gridview;
     private DbQuery dbQuery;
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -76,6 +76,18 @@ public class BooksFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_books, container, false);
         gridview = (GridView) rootView.findViewById(R.id.books_grid);
         bookAdapter = new BookAdapter(getActivity());
+
+        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Launch Details Activity
+                Book book = (Book) bookAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), BookDetailsActivity.class);
+                intent.putExtra("book", book);
+                startActivity(intent);
+            }
+        });
+
         gridview.setAdapter(bookAdapter);
         dbQuery = new DbQuery(DbConnection.getInstace(getActivity()));
         booksGridUpdater = new BooksGridUpdater(bookAdapter, getActivity());

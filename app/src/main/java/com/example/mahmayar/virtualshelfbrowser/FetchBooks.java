@@ -3,7 +3,7 @@ package com.example.mahmayar.virtualshelfbrowser;
 import android.os.AsyncTask;
 import java.util.ArrayList;
 
-public class FetchBooks extends AsyncTask<Void, Void, ArrayList<Book>> {
+public class FetchBooks extends AsyncTask<String, Void, ArrayList<Book>> {
     private AdminModel adminModel;
     private NetworkUtils networkUtils;
     private BooksGridUpdater updater;
@@ -16,8 +16,8 @@ public class FetchBooks extends AsyncTask<Void, Void, ArrayList<Book>> {
     }
 
     @Override
-    protected ArrayList<Book> doInBackground(Void... voids) {
-        String jsonStr = networkUtils.getBookTnfo();
+    protected ArrayList<Book> doInBackground(String... strings) {
+        String jsonStr = networkUtils.getBookTnfo(strings[0]);
         JSONReader reader = new JSONReader();
         return reader.getBooks(jsonStr);
     }

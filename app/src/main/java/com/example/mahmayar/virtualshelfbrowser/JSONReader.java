@@ -1,27 +1,15 @@
 package com.example.mahmayar.virtualshelfbrowser;
 
-import android.net.Uri;
-import android.util.Log;
-
-import com.example.mahmayar.virtualshelfbrowser.Book;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class JSONReader {
 
     public ArrayList<Book> getBooks(String booksJsonStr) {
+        System.out.println(booksJsonStr);
         ArrayList<Book> books = new ArrayList<Book>();
         try {
             // Root Element of JSON
@@ -30,6 +18,7 @@ public class JSONReader {
             JSONArray results = root.getJSONArray("items");
 
             for (int i = 0; i < results.length(); i++) {
+                System.out.println("inside for");
                 Book book = new Book();
 
                 JSONObject bookInfo = results.getJSONObject(i);
@@ -38,7 +27,7 @@ public class JSONReader {
 
 
                 String title = bookInfo.getJSONObject("volumeInfo").getString("title");
-                book.setTitle(replaceDQuotes(title));
+                book.setTitle(replaceQuotes(title));
 
                 String author = bookInfo.getJSONObject("volumeInfo").getJSONArray("authors").getString(0);
                 book.setAuthor(author);
@@ -47,7 +36,7 @@ public class JSONReader {
                 book.setReleaseDate(releaseDate);
 
                 String description = bookInfo.getJSONObject("volumeInfo").getString("description");
-                book.setDescription(replaceDQuotes(description));
+                book.setDescription(replaceQuotes(description));
 
                 boolean isForSale = bookInfo.getJSONObject("saleInfo").getBoolean("isEbook");
 
@@ -71,22 +60,25 @@ public class JSONReader {
                 // add a book only if  it has an image preview
                 try {
                     String imageURL = bookInfo.getJSONObject("volumeInfo").getJSONObject("imageLinks").getString("thumbnail");
-                    book.setImage_url(imageURL);
+                    book.setImageUrl(imageURL);
                     books.add(book);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
+                book.setReviewURL("https://books.google.com.eg/books?id=" + bookInfo.getString("id") + "&sitesec=reviews");
+                System.out.println( bookInfo.getString("id") + " >>> " + book.getReviewURL());
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
+            System.out.println("inside catch");
         }
 
         return books;
     }
 
-    public String replaceDQuotes(String str) {
+    private String replaceQuotes(String str) {
         return str.replaceAll("\"", "\'");
     }
 

@@ -6,11 +6,16 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,14 +26,108 @@ public class AdminActivity extends AppCompatActivity {
     private AdminModel adminModel;
     private DbQuery dbQuery;
     private String searchKey = "";
+    boolean user;
     Intent intent ;
+    static public int LOGIN_RETURN_CODE = 1;
 
-    private final void clearText(){
-        EditText searchText = (EditText) findViewById(R.id.searchText);
-        searchText.setText("");
-        EditText customizeText = (EditText) findViewById(R.id.cutomizeText);
-        customizeText.setText("");
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater ().inflate ( R.menu.drop_down_menu, menu );
+        if(user) {
+            menu.findItem(R.id.remove_books).setVisible ( false );
+            menu.findItem(R.id.edit_books).setVisible ( false );
+            menu.findItem(R.id.add_books).setVisible ( false );
+        }
+        return true;
     }
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data)
+    {
+        String searchKey = data.getStringExtra ("searchKey");
+        String searchValue = data.getStringExtra ("searchValue");
+            switch(requestCode)
+            {
+                // search
+                case 1:
+                    ArrayList<Book> bookList = dbQuery.search(searchKey, searchValue);
+                    for(Book b : bookList) {
+                        System.out.println(b.getISBN());
+                    }
+                    fragment.getBooksGridUpdater().update(bookList);
+                    break;
+
+                //add
+                case 2:
+                    System.out.println("in add books");
+                    new FetchBooks(adminModel, fragment.getBooksGridUpdater()).execute(searchValue);
+                    break;
+
+                //edit
+                case 3:
+                    Map<String, String> attributes = new HashMap<String, String>();
+                    String isbnValue = data.getStringExtra ("isbn");
+                    String priceValue = data.getStringExtra ("price");
+                    attributes.put( "isbn", isbnValue);
+                    attributes.put( "price", priceValue);
+                    adminModel.editBook(attributes);
+                    fragment.getBooksGridUpdater().update(dbQuery.fetchAllBooks());
+                    break;
+                //delete
+                case 4:
+                    String isbnVal = data.getStringExtra ("isbn");
+                    adminModel.deleteBook(isbnVal);
+                    fragment.getBooksGridUpdater().update(dbQuery.fetchAllBooks());
+                    break;
+            }
+
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId ();
+        Intent intent;
+        switch (id) {
+
+            case R.id.search_item :
+               intent = new Intent ( AdminActivity.this,  PopUp.class );
+                intent.putExtra("key", "search");
+                startActivityForResult ( intent,1);
+                break;
+            case R.id.customize_item :
+                intent = new Intent ( AdminActivity.this,  PopUp.class );
+                intent.putExtra("key", "customize");
+                startActivityForResult ( intent,1);
+                break;
+
+            case R.id.add_books :
+                intent = new Intent ( AdminActivity.this,  PopUp.class );
+                intent.putExtra("key", "add");
+                startActivityForResult ( intent,2);
+                break;
+            case R.id.remove_books :
+                intent = new Intent ( AdminActivity.this,  PopUp.class );
+                intent.putExtra("key", "delete");
+                startActivityForResult ( intent,4);
+                break;
+            case R.id.edit_books :
+                intent = new Intent ( AdminActivity.this,  PopUp.class );
+                intent.putExtra("key", "edit");
+                startActivityForResult ( intent,3);
+                break;
+
+        }
+
+        return true;
+    }
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,172 +151,7 @@ public class AdminActivity extends AppCompatActivity {
         intent = getIntent();
         fragment = new BooksFragment();
 
-        boolean user = intent.getBooleanExtra("user", false);
-        if(user) {
-             findViewById(R.id.editBook).setVisibility(View.INVISIBLE);
-             findViewById(R.id.deleteBook).setVisibility(View.INVISIBLE);
-             findViewById(R.id.addBooks).setVisibility(View.INVISIBLE);
-
-        }
-
-        Button addBtn = (Button) findViewById(R.id.addBooks);
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                 new FetchBooks(adminModel, fragment.getBooksGridUpdater()).execute();
-            }
-        });
-
-        Button editBtn = (Button) findViewById(R.id.editBook);
-        editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                findViewById(R.id.isbnView).setVisibility(View.VISIBLE);
-                findViewById(R.id.isbnText).setVisibility(View.VISIBLE);
-                findViewById(R.id.priceView).setVisibility(View.VISIBLE);
-                findViewById(R.id.priceText).setVisibility(View.VISIBLE);
-                findViewById(R.id.okEdit).setVisibility(View.VISIBLE);
-            }
-        });
-
-
-        Button delBtn = (Button) findViewById(R.id.deleteBook);
-        delBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                findViewById(R.id.isbnView).setVisibility(View.VISIBLE);
-                findViewById(R.id.isbnText).setVisibility(View.VISIBLE);
-                findViewById(R.id.okDelete).setVisibility(View.VISIBLE);
-            }
-        });
-
-        Button okDelBtn = (Button) findViewById(R.id.okDelete);
-        okDelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditText isbnText = (EditText) findViewById(R.id.isbnText);
-                adminModel.deleteBook(isbnText.getText().toString());
-
-                findViewById(R.id.isbnView).setVisibility(View.INVISIBLE);
-                ((EditText) findViewById(R.id.isbnText)).setText("");
-                findViewById(R.id.isbnText).setVisibility(View.INVISIBLE);
-                findViewById(R.id.okDelete).setVisibility(View.INVISIBLE);
-            }
-        });
-
-        Button okEditBtn = (Button) findViewById(R.id.okEdit);
-        okEditBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Map<String, String> attributes = new HashMap<String, String>();
-
-                EditText isbnText = (EditText) findViewById(R.id.isbnText);
-                String isbn = isbnText.getText().toString();
-                attributes.put("isbn", isbn);
-
-                EditText priceText = (EditText) findViewById(R.id.priceText);
-                String price = priceText.getText().toString();
-                attributes.put("price", price);
-
-                adminModel.editBook(attributes);
-
-                findViewById(R.id.isbnView).setVisibility(View.INVISIBLE);
-                ((EditText) findViewById(R.id.isbnText)).setText("");
-                findViewById(R.id.isbnText).setVisibility(View.INVISIBLE);
-                findViewById(R.id.priceView).setVisibility(View.INVISIBLE);
-                ((EditText) findViewById(R.id.priceText)).setText("");
-                findViewById(R.id.priceText).setVisibility(View.INVISIBLE);
-                findViewById(R.id.okEdit).setVisibility(View.INVISIBLE);
-
-            }
-        });
-
-
-        Button searchSubmit = (Button) findViewById(R.id.searchSubmit);
-        searchSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditText searchText = (EditText) findViewById(R.id.searchText);
-                String searchValue = searchText.getText().toString();
-                List<Book> bookList = dbQuery.search(searchKey, searchValue);
-                for(Book b : bookList) {
-                    System.out.println(b.getISBN());
-                }
-            }
-        });
-
-        Button customizeSubmit = (Button) findViewById(R.id.cutomizeSubmit);
-        customizeSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditText customizeText = (EditText) findViewById(R.id.cutomizeText);
-                String customizeValue = customizeText.getText().toString();
-                List<Book> bookList = dbQuery.search(searchKey, customizeValue);
-                for(Book b : bookList) {
-                    System.out.println(b.getISBN());
-                }
-            }
-        });
-
-
-        Button searchButton = (Button) findViewById(R.id.search);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearText();
-                PopupMenu popup = new PopupMenu(getApplicationContext(), view);
-                popup.inflate(R.menu.search_menu);
-                popup.show();
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()) {
-                            case R.id.isbn:
-                                searchKey = "isbn";
-                                return true;
-                            case R.id.title:
-                                searchKey = "title";
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-            }
-        });
-
-        Button customizeButton = (Button) findViewById(R.id.customize);
-        customizeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                clearText();
-                PopupMenu popup = new PopupMenu(getApplicationContext(), view);
-                popup.inflate(R.menu.customize_menu);
-                popup.show();
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        switch (menuItem.getItemId()) {
-                            case R.id.author:
-                                searchKey = "author";
-                                return true;
-                            case R.id.category:
-                                searchKey = "category";
-                                return true;
-                            case R.id.price:
-                                searchKey = "price";
-                                return true;
-                            case R.id.releaseDate:
-                                searchKey = "release_date";
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-            }
-        });
-
+        user = intent.getBooleanExtra("user", false);
         getFragmentManager().beginTransaction().add(R.id.bookFragment, fragment, "tag").commit();
     }
 }

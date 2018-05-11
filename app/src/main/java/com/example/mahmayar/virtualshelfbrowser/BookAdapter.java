@@ -45,8 +45,8 @@ public class BookAdapter extends BaseAdapter {
         } else {
             bookView = (ImageView) convertView;                                                // Recycled ImageView
         }
-        System.out.println(books.get(position).getImage_url());
-        Picasso.with(mContext).load(books.get(position).getImage_url()).into(bookView);
+        System.out.println(books.get(position).getImageUrl());
+        Picasso.with(mContext).load(books.get(position).getImageUrl()).into(bookView);
         return bookView;
     }
 
@@ -57,5 +57,6 @@ public class BookAdapter extends BaseAdapter {
 
     public void clear() {
         this.books.clear();
+        notifyDataSetChanged();
     }
 }

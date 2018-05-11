@@ -1,6 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/isbnView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enter ISBN"
+                android:visibility="invisible"
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="62dp" />
+
+            <EditText
+                android:id="@+id/isbnText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number"
+                android:visibility="invisible"
+                tools:layout_editor_absoluteX="84dp"
+                tools:layout_editor_absoluteY="48dp" />
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/priceView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enter price"
+            android:visibility="invisible"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="62dp" />
+
+        <EditText
+            android:id="@+id/priceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:visibility="invisible"
+            tools:layout_editor_absoluteX="84dp"
+            tools:layout_editor_absoluteY="48dp" />
+
+
+    </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/isbn_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ISBN"
+            android:visibility="invisible"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton android:id="@+id/all_book_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AllBooks"
+            android:visibility="invisible"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton android:id="@+id/title_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:visibility="invisible"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton android:id="@+id/library_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Library"
+            android:visibility="invisible"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton android:id="@+id/author_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Author"
+            android:visibility="invisible"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton android:id="@+id/price_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price"
+            android:visibility="invisible"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton android:id="@+id/release_date_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ReleaseDate"
+            android:visibility="invisible"
+            android:onClick="onRadioButtonClicked"/>
+
+        <RadioButton android:id="@+id/category_radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Catrgory"
+            android:visibility="invisible"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
+
+
+    <EditText
+        android:id="@+id/searchField"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10" />
+
+    <Button
+        android:id="@+id/search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OK" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

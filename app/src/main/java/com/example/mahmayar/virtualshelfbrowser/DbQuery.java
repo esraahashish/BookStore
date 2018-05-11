@@ -26,11 +26,11 @@ private SQLiteDatabase db;
           "INNER JOIN " + LIBRARY_BOOK_TABLE_NAME + " as bl ON b.isbn = bl.isbn " +
           "INNER JOIN " + LIBRARY_TABLE_NAME + " as l ON bl.id = l.id where l.name = \"" + value +"\";";*/
             String priceValue = Double.toString(Double.parseDouble(value)+1);
-            sqlSearch = "SELECT * FROM " + BOOK_TABLE_NAME + " WHERE " + attribute + " between " + value + " AND " + priceValue  + ";";
+            sqlSearch = "SELECT * FROM " + BOOK_TABLE_NAME + " WHERE " + attribute.toLowerCase() + " between " + value + " AND " + priceValue  + ";";
         }
         else
         {
-            sqlSearch = "SELECT * FROM " + BOOK_TABLE_NAME + " WHERE " +  "lower(" + attribute+ ")" + " = \"" + value.toLowerCase() + "\";";
+            sqlSearch = "SELECT * FROM " + BOOK_TABLE_NAME + " WHERE " +  " " + attribute.toLowerCase()+ " " + " = \"" + value + "\";";
         }
 
         return getBookList(db.rawQuery(sqlSearch, null));
@@ -47,7 +47,7 @@ private SQLiteDatabase db;
         while(cursor.moveToNext()) {
             Book book = new Book();
 
-            book.setImage_url(cursor.getString(cursor.getColumnIndex("image_url")));
+            book.setImageUrl(cursor.getString(cursor.getColumnIndex("image_url")));
             book.setAuthor(cursor.getString(cursor.getColumnIndex("author")));
             book.setISBN(cursor.getString(cursor.getColumnIndex("isbn")));
             book.setTitle(cursor.getString(cursor.getColumnIndex("title")));

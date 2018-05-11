@@ -3,22 +3,42 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
 
-    <Button
-        android:id="@+id/admin"
-        android:layout_width="172dp"
-        android:layout_height="69dp"
-        android:text="ADMIN"
-        tools:layout_editor_absoluteX="106dp"
-        tools:layout_editor_absoluteY="247dp" />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="170dp">
 
-    <Button
-        android:id="@+id/user"
-        android:layout_width="172dp"
-        android:layout_height="69dp"
-        android:text="USER"
-        tools:layout_editor_absoluteX="106dp"
-        tools:layout_editor_absoluteY="118dp" />
+
+        <Button
+            android:id="@+id/user"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="159dp"
+            android:background="#ffffff"
+            android:text="USER"
+            tools:layout_editor_absoluteX="106dp"
+            tools:layout_editor_absoluteY="120dp" />
+
+        <Button
+            android:id="@+id/admin"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="217dp"
+            android:background="#fff"
+            android:text="Admin"
+            tools:layout_editor_absoluteX="106dp"
+            tools:layout_editor_absoluteY="150dp" />
+
+
+    </RelativeLayout>
+
 
 </android.support.constraint.ConstraintLayout>

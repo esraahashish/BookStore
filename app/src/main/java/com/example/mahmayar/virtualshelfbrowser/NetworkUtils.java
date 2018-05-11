@@ -18,17 +18,21 @@ public class NetworkUtils {
     private static final String QUERY_PARAM = "q";
     private static final String MAX_RESULTS = "maxResults";
     private static final String ORDER_BY = "orderBy";
+    private static final String ISBN = "isbn";
 
-    public String getBookTnfo() {
+    public String getBookTnfo(String isbn) {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
         String bookJsonString = "";
 
         try {
-            Uri builtUri = Uri.parse(BOOK_BASE_URL).buildUpon()
+            Uri builtUri = (isbn.length() == 0) ? Uri.parse(BOOK_BASE_URL).buildUpon()
                     .appendQueryParameter(QUERY_PARAM, "printType:books")
                     .appendQueryParameter(MAX_RESULTS, "40")
                     .appendQueryParameter(ORDER_BY, "newest")
+                    .build() : Uri.parse(BOOK_BASE_URL).buildUpon()
+                    .appendQueryParameter(QUERY_PARAM, "printType:books")
+                    .appendQueryParameter(ISBN, isbn)
                     .build();
 
             URL url = new URL(builtUri.toString());

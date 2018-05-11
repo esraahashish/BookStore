@@ -28,7 +28,7 @@ public class AdminModel extends DbQuery {
                     "\"" + book.getDescription() + "\"," +
                     "\"" + book.getPrice() + "\"," +
                     "\"" + book.getCategory()  + "\"," +
-                    "\""+ book.getImage_url() + "\");";
+                    "\""+ book.getImageUrl() + "\");";
 
             System.out.println(sqlInsert);
 
